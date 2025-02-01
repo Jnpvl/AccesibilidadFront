@@ -1,0 +1,59 @@
+<app-title title="Aseguradoras" />
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="bg-white dark:bg-gray-900 p-5 flex justify-between">
+        <div>
+            <input type="text" [(ngModel)]="searchText" (input)="onSearchInputChange()"
+                class="w-100 border-2 border-gray-300 p-2 rounded-lg" placeholder="Buscar...">
+        </div>
+        <button
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" (click)="download()">
+            <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"  />
+            </svg>
+            
+            <span>Download</span>
+        </button>
+    </div>
+
+    <div class="max-h-[600px]">
+        @if(data.length > 0){
+        <table class="table-fixed w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3 w-1/12">ID</th>
+                    <th scope="col" class="px-6 py-3 w-3/12">Nombre</th>
+                    <th scope="col" class="px-6 py-3 w-3/12">Dirección</th>
+                    <th scope="col" class="px-6 py-3 w-2/12">Teléfono</th>
+                    <th scope="col" class="px-6 py-3 w-3/12">Ubicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let info of data">
+                    <td class="px-3 py-1">{{ info.seg_id || '-------' }}</td>
+                    <td class="px-3 py-1">{{ info.seg_nombre || '-------' }}</td>
+                    <td class="px-3 py-1">{{ info.seg_direccion || '-------' }}</td>
+                    <td class="px-3 py-1">{{ info.seg_tel || '-------' }}</td>
+                    <td class="px-3 py-1">{{ info.seg_loc || '-------' }}</td>
+                </tr>
+            </tbody>
+        </table>
+        }@else{
+        <div *ngIf="data.length === 0" class="text-center py-4 text-gray-500">
+            Sin registros
+        </div>
+        }
+    </div>
+</div>
+
+<div class="flex justify-between p-5">
+    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l" (click)="previousPage()"
+        [disabled]="currentPage <= 1">
+        Anterior
+    </button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r" (click)="nextPage()"
+        [disabled]="currentPage >= totalPages">
+        Siguiente
+    </button>
+</div>

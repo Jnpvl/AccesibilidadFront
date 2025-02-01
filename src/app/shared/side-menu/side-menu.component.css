@@ -1,0 +1,36 @@
+#menu {
+    width: 16rem;
+    transition: width 0.3s ease;
+  }
+  
+  #menu.collapsed {
+    width: 4rem; /* El ancho cuando el menú está colapsado */
+  }
+  
+  #menu.collapsed #logo {
+    display: none; /* Oculta el logo cuando está colapsado */
+  }
+  
+  #menu.collapsed a {
+    justify-content: center; /* Centra el contenido cuando está colapsado */
+  }
+  
+  #menu.collapsed a span {
+    display: inline-block; /* Muestra la inicial */
+    text-transform: uppercase;
+    font-size: 1.25rem; /* Ajusta el tamaño de la inicial */
+  }
+  
+  #menu.collapsed a span:not(.first-letter) {
+    display: none; /* Oculta el texto completo cuando el menú está colapsado */
+  }
+  
+  #menu.collapsed .text-lg {
+    display: none; /* Oculta el texto largo cuando el menú está colapsado */
+  }
+  
+  #menu a {
+    display: flex;
+    align-items: center;
+  }
+  
