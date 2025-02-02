@@ -1,3 +1,20 @@
+@if(isLoading){
+<div class="fixed inset-0 bg-black opacity-50 z-40"></div>
+<div class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+        <h2 class="text-xl font-bold mb-4">Descarga en curso</h2>
+        <p>Por favor, espere mientras se genera el reporte...</p>
+        <div class="flex items-center justify-center mt-4">
+            <svg class="animate-spin h-10 w-10 text-[#B94645]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+        </div>
+    </div>
+</div>
+}
+
 <app-title title="Aseguradoras" />
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -6,14 +23,25 @@
             <input type="text" [(ngModel)]="searchText" (input)="onSearchInputChange()"
                 class="w-100 border-2 border-gray-300 p-2 rounded-lg" placeholder="Buscar...">
         </div>
-        <button
-            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center" (click)="download()">
+        <div class="w-100 flex justify-between">
+            <button
+                class="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                (click)="downloadPdf()">
+                <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                </svg>
+                <span>Descargar Pdf</span>
+            </button>
+            <button
+            class="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+            (click)="excelOptions = true">
             <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"  />
+              <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
             </svg>
-            
-            <span>Download</span>
-        </button>
+            <span>Descargar Excel</span>
+          </button>
+          
+        </div>
     </div>
 
     <div class="max-h-[600px]">
@@ -57,3 +85,85 @@
         Siguiente
     </button>
 </div>
+
+
+
+@if(excelOptions){
+
+    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+      
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                
+                <div class="flex items-center  p-2">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 sm:h-10 sm:w-10">
+                      <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                           stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M7 7h10M7 11h10m-3 4h3M12 3v4m0 0H8a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-6" />
+                      </svg>
+                    </div>
+                    <div class="ml-2">
+                      <h3 class="text-base font-semibold text-gray-900" id="modal-title">
+                        ¿Qué datos buscas exportar?
+                      </h3>
+                    </div>
+                  </div>
+                  
+                <div class="mt-4">
+                  <div class="flex items-center mb-4">
+                    <input id="todo" type="checkbox" name="exportOptions" [(ngModel)]="exportAll" (change)="onExportAllChange()"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer ">
+                    <label for="todo" class="ml-2 text-sm font-medium text-gray-900">Todo el contenido</label>
+                  </div>
+      
+                  <div class="flex items-center mb-2">
+                    <input id="nombre" type="checkbox" name="exportOptions" [(ngModel)]="exportColumns.nombre" [disabled]="exportAll"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer ">
+                    <label for="nombre" class="ml-2 text-sm font-medium text-gray-900">Nombre</label>
+                  </div>
+                  <div class="flex items-center mb-2">
+                    <input id="direccion" type="checkbox" name="exportOptions" [(ngModel)]="exportColumns.direccion" [disabled]="exportAll"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer ">
+                    <label for="direccion" class="ml-2 text-sm font-medium text-gray-900">Dirección</label>
+                  </div>
+                  <div class="flex items-center mb-2">
+                    <input id="telefono" type="checkbox" name="exportOptions" [(ngModel)]="exportColumns.telefono" [disabled]="exportAll"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer ">
+                    <label for="telefono" class="ml-2 text-sm font-medium text-gray-900">Teléfono</label>
+                  </div>
+                  <div class="flex items-center mb-2">
+                    <input id="localidad" type="checkbox" name="exportOptions" [(ngModel)]="exportColumns.localidad" [disabled]="exportAll"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer ">
+                    <label for="localidad" class="ml-2 text-sm font-medium text-gray-900">Localidad</label>
+                  </div>
+      
+                  <div class="mt-4">
+                    <label for="searchFilter" class="block text-sm font-medium text-gray-900">
+                      Buscar datos específicos
+                    </label>
+                    <input id="searchFilter" type="text" [(ngModel)]="searchEspecificData" placeholder="Solo dato específico"
+                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer ">
+                  </div>
+                </div>
+              </div>
+      
+              <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <button type="button" (click)="downloadExcel()"
+                  class="cursor-pointer  inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">
+                  Exportar
+                </button>
+                <button type="button"   (click)="excelOptions = false"
+                  class="cursor-pointer  mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+}

@@ -12,6 +12,5 @@ export class HomeComponent {
 
   onToggleMenu() {
     this.toggleMenu.emit(); 
-    console.log("no sirve")
   }
 }

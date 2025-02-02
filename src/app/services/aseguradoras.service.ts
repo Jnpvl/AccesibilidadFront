@@ -10,7 +10,6 @@ export class AsegudarorasService {
     private apiclientService: ApiclientService
   ) { }
 
-
   public async getAseguradoras(page: number, pageSize: number, search?: string): Promise<any> {
     const params = new URLSearchParams({
       page: page.toString(),
@@ -27,35 +26,60 @@ export class AsegudarorasService {
 
   public async downloadReport(): Promise<void> {
     try {
-        // Hacer la petición manualmente con fetch
-        const response = await fetch('http://localhost:8080/api/v1/aseguradoras/report', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer TU_TOKEN_SI_ES_NECESARIO'
-            }
-        });
+      const blob: Blob = await this.apiclientService.get<Blob>('aseguradoras/report', {
+        responseType: 'blob', 
+        
+      } as any);
 
-        if (!response.ok) {
-            throw new Error(`Error en la descarga: ${response.statusText}`);
-        }
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'reporte_Aseguradoras.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
 
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'reporte_Aseguradoras.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-
-        console.log("Descarga completada.");
     } catch (error) {
-        console.error("Error al descargar el reporte:", error);
+      console.error("Error al descargar el reporte:", error);
     }
-}
+  }
 
+  public async downloadExcel(options: {
+    columns?: string; 
+    filters?: string;
+  }): Promise<void> {
+    try {
+     
+      const params = new URLSearchParams();
+      if (options.columns) {
+        params.append('columns', options.columns);
+      }
+      if (options.filters) {
+        params.append('filters', options.filters);
+      }
+      
+      const url = `aseguradoras/excel?${params.toString()}`;
 
+      console.log("url",url)
+      
+      const blob: Blob = await this.apiclientService.get<Blob>(url, {
+        responseType: 'blob'
+      } as any);
+  
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'reporte_Aseguradoras.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch(error) {
+      console.error("Error al descargar el excel", error);
+    }
+  }
 
+  
 
 }
