@@ -18,6 +18,22 @@ export const routes: Routes = [
                 path: 'example',
                 title: 'Ejemplo',
                 loadComponent: ( ) => import('./dashboard/pages/example/example.component').then(m => m.ExampleComponent),
+            },
+            {
+                path: 'concesionario',
+                title: 'Concesionario',
+                loadComponent: ( ) => import('./dashboard/pages/concesionario/concesionario.component').then(m => m.ConcesionarioComponent),
+            },
+            {
+                path: 'permisos',
+                title: 'Permisos',
+                loadComponent: ( ) => import('./dashboard/pages/permisos/permisos.component').then(m => m.PermisosComponent),
+            },
+            {
+                path: 'permisos-detail/:PermisionarioId',
+                title: 'Detalle del permisionario',
+                loadComponent: ( ) => import('./dashboard/pages/permisos-detail/permisos-detail.component').then(m => m.PermisosDetailComponent),
+              
             }
         ]
     },

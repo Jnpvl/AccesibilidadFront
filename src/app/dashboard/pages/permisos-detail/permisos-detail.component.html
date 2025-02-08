@@ -1,0 +1,303 @@
+@if(isLoading){
+  <div class="fixed inset-0 bg-black opacity-50 z-40"></div>
+  <div class="fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+          <h2 class="text-xl font-bold mb-4">Descarga en curso</h2>
+          <p>Por favor, espere mientras se genera el reporte...</p>
+          <div class="flex items-center justify-center mt-4">
+              <svg class="animate-spin h-10 w-10 text-[#B94645]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+          </div>
+      </div>
+  </div>
+  }
+  
+<app-title title="Detalles del Permisionario"></app-title>
+
+<div class="mx-auto my-6 flex justify-between w-[100%]">
+  <button (click)="goBack()"
+    class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+    </svg>
+    <span>Regresar al listado</span>
+  </button>
+
+  <button (click)="pdfGlobal()"
+    class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+    <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+      <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+    </svg>
+    <span>Descargar PDF Global</span>
+  </button>
+  <button (click)="excelGlobal()"
+    class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+    <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+      <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+    </svg>
+    <span>Descargar EXCEL Global</span>
+  </button>
+</div>
+
+<div class="mx-auto space-y-6">
+  <!-- Encabezado con el nombre del permisionario -->
+  <div class="p-6 bg-white shadow rounded-lg">
+    <!-- Nombre del permisionario -->
+    <h2 class="text-2xl font-bold text-gray-800">
+      {{ permisionario }}
+    </h2>
+
+    <!-- Datos adicionales en una cuadrícula -->
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <!-- CURP -->
+      <div>
+        <p class="text-gray-600 font-semibold">CURP:</p>
+        <p class="text-gray-800">{{ curp }}</p>
+      </div>
+
+      <!-- Colonia -->
+      <div>
+        <p class="text-gray-600 font-semibold">Colonia:</p>
+        <p class="text-gray-800">{{ colonia }}</p>
+      </div>
+
+      <!-- Código Postal -->
+      <div>
+        <p class="text-gray-600 font-semibold">C.P.:</p>
+        <p class="text-gray-800">{{ Cp }}</p>
+      </div>
+
+      <!-- Dirección -->
+      <div>
+        <p class="text-gray-600 font-semibold">Dirección:</p>
+        <p class="text-gray-800">{{ direccion }}</p>
+      </div>
+
+      <!-- RFC -->
+      <div>
+        <p class="text-gray-600 font-semibold">RFC:</p>
+        <p class="text-gray-800">{{ rfc }}</p>
+      </div>
+
+      <!-- Teléfono -->
+      <div>
+        <p class="text-gray-600 font-semibold">Teléfono:</p>
+        <p class="text-gray-800">{{ telefono }}</p>
+      </div>
+
+      <!-- Tipo de Permisionario -->
+      <div>
+        <p class="text-gray-600 font-semibold">Tipo de Permisionario:</p>
+        <p class="text-gray-800">{{ tipoPermisionario }}</p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Iteración por cada elemento 'dato' de 'datos' -->
+  <div *ngFor="let dato of datos" class="p-6 bg-white shadow rounded-lg">
+
+    <!-- Header con marca, modelo, vigencia y botones -->
+    <div class="flex justify-between items-center border-b pb-4 mb-4">
+
+      <!-- Información principal -->
+      <div>
+        <h3 class="text-xl font-bold">
+          {{ dato.Marca}} - {{ dato.Modelo }}
+        </h3>
+        <p class="text-gray-600">
+          Vigencia:
+          <span [ngClass]="{
+              'text-green-500': isVigente(dato.FechaTermino),
+              'text-red-500': !isVigente(dato.FechaTermino)
+            }">
+            {{ isVigente(dato.FechaTermino) ? 'Vigente' : 'No vigente' }}
+          </span>
+        </p>
+      </div>
+
+      <!-- Botones en la parte derecha -->
+      <div class="flex space-x-2">
+        <!-- Botón para descargar PDF individual -->
+        <button (click)="pdfIndividual(dato.PermisoId)"
+          class="flex items-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+          <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+          </svg>
+          <span>Descargar PDF</span>
+        </button>
+
+        <!-- Botón para mostrar/ocultar detalles -->
+        <button (click)="dato.expanded = !dato.expanded"
+          class="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          <span>{{ dato.expanded ? 'Ocultar' : 'Mostrar' }} detalles</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Detalles (sólo visibles si expanded == true) -->
+    <div *ngIf="dato.expanded" class="mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Campo: Permisionario ID -->
+        <div>
+          <p class="text-gray-600 font-semibold">Permisionario ID:</p>
+          <p class="text-gray-800">{{ dato.PermisionarioId }}</p>
+        </div>
+
+        <!-- Campo: Permiso ID -->
+        <div>
+          <p class="text-gray-600 font-semibold">Permiso ID:</p>
+          <p class="text-gray-800">{{ dato.PermisoId }}</p>
+        </div>
+
+        <!-- Campo: Tipo de Permiso -->
+        <div>
+          <p class="text-gray-600 font-semibold">Tipo de Permiso:</p>
+          <p class="text-gray-800">{{ dato.TipoDePermiso }}</p>
+        </div>
+
+        <!-- Campo: No. Expediente -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Expediente:</p>
+          <p class="text-gray-800">{{ dato.NoExpediente }}</p>
+        </div>
+
+        <!-- Campo: Modalidad -->
+        <div>
+          <p class="text-gray-600 font-semibold">Modalidad:</p>
+          <p class="text-gray-800">{{ dato.Modalidad }}</p>
+        </div>
+
+        <!-- Campo: Sistema -->
+        <div>
+          <p class="text-gray-600 font-semibold">Sistema:</p>
+          <p class="text-gray-800">{{ dato.Sistema }}</p>
+        </div>
+
+        <!-- Campo: No. Folio -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Folio:</p>
+          <p class="text-gray-800">{{ dato.NoFolio }}</p>
+        </div>
+
+        <!-- Campo: No. Oficio -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Oficio:</p>
+          <p class="text-gray-800">{{ dato.NoOficio }}</p>
+        </div>
+
+        <!-- Campo: Fecha Inicio -->
+        <div>
+          <p class="text-gray-600 font-semibold">Fecha Inicio:</p>
+          <p class="text-gray-800">{{ dato.FechaInicio | date:'dd/MM/yyyy' }}</p>
+        </div>
+
+        <!-- Campo: No. Días -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Días:</p>
+          <p class="text-gray-800">{{ dato.NoDias }}</p>
+        </div>
+
+        <!-- Campo: Fecha Término -->
+        <div>
+          <p class="text-gray-600 font-semibold">Fecha Término:</p>
+          <p class="text-gray-800">{{ dato.FechaTermino | date:'dd/MM/yyyy' }}</p>
+        </div>
+
+        <!-- Campo: Municipio -->
+        <div>
+          <p class="text-gray-600 font-semibold">Municipio:</p>
+          <p class="text-gray-800">{{ dato.Municipio }}</p>
+        </div>
+
+        <!-- Campo: Términos (ocupa 2 columnas en pantallas grandes) -->
+        <div class="md:col-span-2">
+          <p class="text-gray-600 font-semibold">Términos:</p>
+          <p class="text-gray-800">{{ dato.Terminos }}</p>
+        </div>
+
+        <!-- Campo: Marca -->
+        <div>
+          <p class="text-gray-600 font-semibold">Marca:</p>
+          <p class="text-gray-800">{{ dato.Marca }}</p>
+        </div>
+
+        <!-- Campo: Modelo -->
+        <div>
+          <p class="text-gray-600 font-semibold">Modelo:</p>
+          <p class="text-gray-800">{{ dato.Modelo }}</p>
+        </div>
+
+        <!-- Campo: No. Serie -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Serie:</p>
+          <p class="text-gray-800">{{ dato.NoSerie }}</p>
+        </div>
+
+        <!-- Campo: No. Motor -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. Motor:</p>
+          <p class="text-gray-800">{{ dato.NoMotor }}</p>
+        </div>
+
+        <!-- Campo: Capacidad -->
+        <div>
+          <p class="text-gray-600 font-semibold">Capacidad:</p>
+          <p class="text-gray-800">{{ dato.Capacidad }}</p>
+        </div>
+
+        <!-- Campo: Tipo de Unidad -->
+        <div>
+          <p class="text-gray-600 font-semibold">Tipo de Unidad:</p>
+          <p class="text-gray-800">{{ dato.TipoDeUnidad }}</p>
+        </div>
+
+        <!-- Campo: Holograma -->
+        <div>
+          <p class="text-gray-600 font-semibold">Holograma:</p>
+          <p class="text-gray-800">{{ dato.Holograma }}</p>
+        </div>
+
+        <!-- Campo: Director -->
+        <div>
+          <p class="text-gray-600 font-semibold">Director:</p>
+          <p class="text-gray-800">{{ dato.Director }}</p>
+        </div>
+
+        <!-- Campo: Pie -->
+        <div>
+          <p class="text-gray-600 font-semibold">Pie:</p>
+          <p class="text-gray-800">{{ dato.Pie }}</p>
+        </div>
+
+        <!-- Campo: No. De Placa -->
+        <div>
+          <p class="text-gray-600 font-semibold">No. De Placa:</p>
+          <p class="text-gray-800">{{ dato.NoDePlaca || 'sin especificar' }}</p>
+        </div>
+      </div>
+
+      <!-- Pie de página con información adicional -->
+      <div class="mt-4 border-t pt-4 text-sm text-gray-500">
+        <p>
+          <strong>Insertado el:</strong>
+          {{ dato.InsertDate | date:'dd/MM/yyyy' }}
+        </p>
+        <p>
+          <strong>Insertado por:</strong>
+          {{ dato.InsertBy }}
+        </p>
+        <p>
+          <strong>Última actualización:</strong>
+          {{ dato.UpdateDate | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

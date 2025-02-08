@@ -1,0 +1,184 @@
+@if(isLoading){
+    <div class="fixed inset-0 bg-black opacity-50 z-40"></div>
+    <div class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+            <h2 class="text-xl font-bold mb-4">Descarga en curso</h2>
+            <p>Por favor, espere mientras se genera el reporte...</p>
+            <div class="flex items-center justify-center mt-4">
+                <svg class="animate-spin h-10 w-10 text-[#B94645]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    }
+    
+    <app-title title="Concesionario" />
+    
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <div class="bg-white dark:bg-gray-900 p-5 flex justify-between">
+            <div>
+                <input type="text" [(ngModel)]="searchText" (input)="onSearchInputChange()"
+                    class="w-100 border-2 border-gray-300 p-2 rounded-lg" placeholder="Buscar...">
+            </div>
+            <div class="w-100 flex justify-between">
+                <button
+                    class="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                    (click)="downloadPdf()">
+                    <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                    </svg>
+                    <span>Descargar Pdf</span>
+                </button>
+                <button
+                    class="cursor-pointer bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+                    (click)="excelOptions = true">
+                    <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                    </svg>
+                    <span>Descargar Excel</span>
+                </button>
+    
+            </div>
+        </div>
+    
+        <div >
+            @if(data.length > 0){
+            <table class="table-fixed w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 w-1/12">ID</th>
+                        <th scope="col" class="px-6 py-3 w-3/12">Terminos</th>
+                        <th scope="col" class="px-6 py-3 w-3/12">Concesionario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let info of data">
+                        <td class="px-3 py-1">{{ info.kCodigo || '-------' }}</td>
+                        <td class="px-3 py-1">{{ info.kTerminos|| '-------' }}</td>
+                        <td class="px-3 py-1">{{ info.kConcesionario || '-------' }}</td>
+    
+                    </tr>
+                </tbody>
+            </table>
+            }@else{
+            <div *ngIf="data.length === 0" class="text-center py-4 text-gray-500">
+                Sin registros
+            </div>
+            }
+        </div>
+    </div>
+    
+    <div class="flex justify-between p-5">
+        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l" (click)="previousPage()"
+            [disabled]="currentPage <= 1">
+            Anterior
+        </button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r" (click)="nextPage()"
+            [disabled]="currentPage >= totalPages">
+            Siguiente
+        </button>
+    </div>
+    
+    
+    
+    @if(excelOptions){
+    
+    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+    
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div
+                    class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+    
+                        <div class="flex items-center p-2">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 sm:h-10 sm:w-10">
+                                <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                    stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7 7h10M7 11h10m-3 4h3M12 3v4m0 0H8a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-6" />
+                                </svg>
+                            </div>
+                            <div class="ml-2">
+                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">
+                                    ¿Qué datos buscas exportar?
+                                </h3>
+                            </div>
+                        </div>
+    
+    
+                        <div class="mt-4">
+                            <div class="flex flex-row items-center bg-gray-100 w-full space-x-4 m-5">
+                                <div class="flex items-center">
+                                  <input id="todo" type="checkbox" name="exportOptions" [(ngModel)]="exportAll"
+                                    (change)="onExportAllChange()"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                                  <label for="todo" class="ml-2 text-sm font-medium text-gray-900">
+                                    Todo el contenido sin filtros
+                                  </label>
+                                </div>
+                              
+                                <div class="flex items-center">
+                                  <input id="soloVigentes" type="checkbox" [(ngModel)]="soloVigentes"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                                  <label for="soloVigentes" class="ml-2 text-sm font-medium text-gray-900">Solo vigentes</label>
+                                </div>
+                              </div>
+                              <h1>Filtra por:</h1>
+                            <div *ngFor="let option of filterOptions">
+                                <div class="flex items-center mb-2">
+                                    <input [id]="option.id" type="checkbox" name="exportOptions"
+                                        [(ngModel)]="exportColumns[option.key]" [disabled]="exportAll"
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                                    <label [for]="option.id" class="ml-2 text-sm font-medium text-gray-900">
+                                        {{ option.label }}
+                                    </label>
+                                </div>
+    
+                                <div class="mb-2 ml-6" *ngIf="exportColumns[option.key]">
+                                    <label [for]="option.id + '_input'" class="block text-xs text-gray-700">
+                                        Valor para {{ option.label }}
+                                    </label>
+                                    <input [id]="option.id + '_input'" type="text" [(ngModel)]="columnFilters[option.key]"
+                                        placeholder="Ingrese valor"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                </div>
+                            </div>
+    
+                            <div class="mt-4" *ngIf="!hasColumnFilters()">
+                                <label for="globalSearch" class="block text-sm font-medium text-gray-900">
+                                    Buscar datos globalmente
+                                </label>
+                                <input id="globalSearch" type="text" [(ngModel)]="globalSearch"
+                                    placeholder="Ingrese término de búsqueda"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                        </div>
+                    </div>
+    
+    
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" (click)="downloadExcel()"
+                            class="cursor-pointer inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">
+                            Exportar
+                        </button>
+                        <button type="button" (click)="excelOptions = false"
+                            class="cursor-pointer mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    }
+    
+    
