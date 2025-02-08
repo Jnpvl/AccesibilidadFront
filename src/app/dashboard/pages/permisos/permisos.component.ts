@@ -40,7 +40,7 @@ export class PermisosComponent {
     Modelo: false,
     TipoDeUnidad: false
   };
-  
+
   columnFilters: { [key: string]: string } = {
     TipoDePermiso: '',
     NoExpediente: '',
@@ -84,7 +84,7 @@ export class PermisosComponent {
     const response = await this.permisosService.getPermisos(
       this.currentPage, this.pageSize, this.searchText, fechaInicioFormatted, fechaTerminoFormatted
     );
-    
+
     this.currentPage = response.pagination.page;
     this.pageSize = response.pagination.pageSize;
     this.data = response.data;
@@ -132,24 +132,38 @@ export class PermisosComponent {
   }
 
   async downloadExcel() {
+    if (
+      !this.exportAll &&
+      !this.soloVigentes &&
+      !this.hasColumnFilters() &&
+      (!this.globalSearch || this.globalSearch.trim() === '')
+    ) {
+      alert("Por favor, seleccione al menos una opción antes de exportar.");
+      return;
+    }
+  
     this.isLoading = true;
   
     let filtersObj: { [key: string]: string } = {};
   
     if (this.hasColumnFilters()) {
       for (const option of this.filterOptions) {
-        if (this.exportColumns[option.key] && this.columnFilters[option.key] && this.columnFilters[option.key].trim() !== '') {
+        if (
+          this.exportColumns[option.key] &&
+          this.columnFilters[option.key] &&
+          this.columnFilters[option.key].trim() !== ''
+        ) {
           filtersObj[option.key] = this.columnFilters[option.key].trim();
         }
       }
     } else if (this.globalSearch && this.globalSearch.trim() !== '') {
       filtersObj['global'] = this.globalSearch.trim();
     }
-    
+  
     if (this.soloVigentes) {
       filtersObj['soloVigentes'] = 'true';
     }
-    
+  
     try {
       await this.permisosService.downloadExcel({
         filters: JSON.stringify(filtersObj)
@@ -169,6 +183,7 @@ export class PermisosComponent {
       this.isLoading = false;
     }
   }
+  
 
   detalles(PermisionarioId: number) {
     this.router.navigate(['/dashboard/permisos-detail', PermisionarioId]);
@@ -181,6 +196,6 @@ export class PermisosComponent {
     this.fechaInicio = '';
     this.fechaTermino = '';
     this.initializeData();
-}
+  }
 
 }
