@@ -50,8 +50,6 @@ export class ConcesionarioService {
     filters?: string;
   }): Promise<void> {
 
-    console.log("filtros", options.filters);
-
     try {
       const params = new URLSearchParams();
       if (options.columns) {
@@ -63,9 +61,7 @@ export class ConcesionarioService {
   
       
       const url = `concesionarios/excel?${params.toString()}`;
-  
-      console.log("url", url);
-      
+        
       const blob: Blob = await this.apiclientService.get<Blob>(url, {
         responseType: 'blob'
       } as any);

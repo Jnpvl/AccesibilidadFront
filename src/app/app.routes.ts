@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
+import { authguardGuard } from './guards/authguard.guard';
 
 export const routes: Routes = [
     {
         path: 'dashboard',
+        canActivate: [authguardGuard],
         loadComponent: ( ) => import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
         children: [
             {
@@ -34,8 +36,19 @@ export const routes: Routes = [
                 title: 'Detalle del permisionario',
                 loadComponent: ( ) => import('./dashboard/pages/permisos-detail/permisos-detail.component').then(m => m.PermisosDetailComponent),
               
-            }
+            },
+            {
+                path: 'usuarios',
+                title: 'Usuarios',
+                loadComponent: ( ) => import('./dashboard/pages/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+              
+            },
+
         ]
+    },
+    {
+        path: 'auth',
+        loadComponent: ( ) => import('./auth/auth.component').then(m => m.AuthComponent),
     },
     {
         path: '',

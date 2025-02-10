@@ -60,8 +60,6 @@ export class AsegudarorasService {
       }
       
       const url = `aseguradoras/excel?${params.toString()}`;
-
-      console.log("url",url)
       
       const blob: Blob = await this.apiclientService.get<Blob>(url, {
         responseType: 'blob'

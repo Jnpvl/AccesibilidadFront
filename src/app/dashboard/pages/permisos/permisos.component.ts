@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PermisosService } from '../../../services/permisos.service';
+import { LocalStorageService } from '../../../services/local-storage.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TitleComponent } from '../../../shared/title/title.component';
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './permisos.component.html',
   styleUrls: ['./permisos.component.css']
 })
-export class PermisosComponent {
+export class PermisosComponent implements OnInit {
 
   data: Permisos[] = [];
   currentPage: number = 1;
@@ -70,11 +71,23 @@ export class PermisosComponent {
     { id: 'tipoUnidad', key: 'TipoDeUnidad', label: 'Tipo de Unidad' },
   ];
 
+  // Propiedad para almacenar si el usuario tiene permiso para exportar Excel
+  canExportExcel: boolean = false;
+
   constructor(
     private permisosService: PermisosService,
-    private router: Router
+    private router: Router,
+    private localStorageService: LocalStorageService
   ) {
     this.initializeData();
+  }
+
+  ngOnInit(): void {
+    // Al iniciar, obtenemos el usuario y verificamos el permiso de exportación
+    const user = this.localStorageService.getUser();
+    if (user && user.canExportExcel) {
+      this.canExportExcel = true;
+    }
   }
 
   private async initializeData() {
@@ -183,7 +196,6 @@ export class PermisosComponent {
       this.isLoading = false;
     }
   }
-  
 
   detalles(PermisionarioId: number) {
     this.router.navigate(['/dashboard/permisos-detail', PermisionarioId]);
@@ -192,10 +204,10 @@ export class PermisosComponent {
   onDateChange(): void {
     this.initializeData();
   }
+
   resetDateFilter(): void {
     this.fechaInicio = '';
     this.fechaTermino = '';
     this.initializeData();
   }
-
 }

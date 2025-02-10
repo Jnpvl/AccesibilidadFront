@@ -78,7 +78,6 @@ soloVigentes: boolean = false;
     this.currentPage = response.pagination.page;
     this.pageSize = response.pagination.pageSize;
     this.data = response.data;
-    console.log("data",this.data)
     this.totalItems = response.pagination.totalRecords;
     this.totalPages = Math.ceil(this.totalItems / this.pageSize);
   }

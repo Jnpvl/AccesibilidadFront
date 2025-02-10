@@ -33,14 +33,23 @@ export class PermisosService {
         params.append("fechaTermino", fechaTermino);
       }
   
-      return this.apiclientService.get<any>(`permisos?${params.toString()}`);
+      return this.apiclientService.get<any>(`/permisos?${params.toString()}`);
+  }
+
+  public async getPermisionario(permisionarioId:number): Promise <PermisionarioData>{
+    const response = this.apiclientService.get<PermisionarioData>(`permisos/permisionario?permisionarioId=${permisionarioId}`);
+    return response;
   }
   
   public async downloadReports(permisionarioId: number): Promise<void> {
     try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+  
       const blob: Blob = await this.apiclientService.get<Blob>('permisos/reports', {
-        params: { permisionarioId: permisionarioId }, 
-        responseType: 'blob'
+        params: { permisionarioId: permisionarioId },
+        responseType: 'blob',
+        headers
       } as any);
   
       const url = window.URL.createObjectURL(blob);
@@ -57,11 +66,13 @@ export class PermisosService {
   }
   
   public async downloadExcel(options: {
-    columns?: string; 
+    columns?: string;
     filters?: string;
   }): Promise<void> {
-
     try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+  
       const params = new URLSearchParams();
       if (options.columns) {
         params.append('columns', options.columns);
@@ -70,13 +81,11 @@ export class PermisosService {
         params.append('filters', options.filters);
       }
   
-      
       const url = `permisos/excel?${params.toString()}`;
   
-      console.log("url", url);
-      
       const blob: Blob = await this.apiclientService.get<Blob>(url, {
-        responseType: 'blob'
+        responseType: 'blob',
+        headers
       } as any);
   
       const downloadUrl = window.URL.createObjectURL(blob);
@@ -87,30 +96,27 @@ export class PermisosService {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(downloadUrl);
-    } catch(error) {
+    } catch (error) {
       console.error("Error al descargar el excel", error);
     }
   }
-
-  public async getPermisionario(permisionarioId:number): Promise <PermisionarioData>{
-    const response = this.apiclientService.get<PermisionarioData>(`permisos/permisionario?permisionarioId=${permisionarioId}`);
-    return response;
-  }
-
+  
   public async downloadPermisionarioExcel(permisionarioId: number): Promise<void> {
-
     try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+  
       const filtersObj = {
-        PermisionarioId: permisionarioId.toString()  
+        PermisionarioId: permisionarioId.toString()
       };
-
       const filtersString = JSON.stringify(filtersObj);
   
       const blob: Blob = await this.apiclientService.get<Blob>(
-        'permisos/permisionarioExcel', 
+        'permisos/permisionarioExcel',
         {
-          params: { filters: filtersString }, 
-          responseType: 'blob'
+          params: { filters: filtersString },
+          responseType: 'blob',
+          headers
         } as any
       );
   
@@ -122,17 +128,20 @@ export class PermisosService {
       a.click();
       document.body.removeChild(a);
       window.URL.revokeObjectURL(downloadUrl);
-  
-    } catch(error) {
+    } catch (error) {
       console.error("Error al descargar el excel", error);
     }
   }
-
+  
   public async downloadIndividualReport(permisoId: number): Promise<void> {
     try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+  
       const blob: Blob = await this.apiclientService.get<Blob>('permisos/report', {
-        params: { permisoId: permisoId}, 
-        responseType: 'blob'
+        params: { permisoId: permisoId },
+        responseType: 'blob',
+        headers
       } as any);
   
       const url = window.URL.createObjectURL(blob);
@@ -147,6 +156,5 @@ export class PermisosService {
       console.error("Error al descargar el reporte:", error);
     }
   }
-  
-
+    
 }

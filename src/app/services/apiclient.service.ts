@@ -38,4 +38,14 @@ export class ApiclientService  {
     }
     return response;
   }
+
+  public async put<T>(path: string, body: any, headers?: { [key: string]: string }): Promise<T> {
+    const url = `${environment.apiUrl}${path}`;
+    const options = headers ? { headers: new HttpHeaders(headers) } : {};
+    const response = await this.httpClient.put<T>(url, body, options).toPromise();
+    if (response === undefined) {
+      throw new Error('Response is undefined');
+    }
+    return response;
+  }
 }

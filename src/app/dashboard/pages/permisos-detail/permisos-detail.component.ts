@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute,Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TitleComponent } from '../../../shared/title/title.component';
 import { CommonModule } from '@angular/common';
 import { PermisosService } from '../../../services/permisos.service';
+import { LocalStorageService } from '../../../services/local-storage.service';
 import { Permisos } from '../../../interfaces/Permisos.interface';
 
 @Component({
@@ -15,28 +16,39 @@ export class PermisosDetailComponent implements OnInit {
   permisionarioId!: number;
   permisionario: string = '';
 
-  curp: string = '' ;
+  curp: string = '';
   colonia: string = '';
   Cp: string = '';
   direccion: string = '';
-  rfc : string ='';
+  rfc: string = '';
   telefono: string = '';
-  tipoPermisionario : string = ''
+  tipoPermisionario: string = '';
 
   datos: (Permisos & { expanded: boolean })[] = [];
-
   isLoading: boolean = false;
 
+  canExportPdf: boolean = false;
+  canExportExcel: boolean = false;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,
-    private permisosService: PermisosService) { }
+    private permisosService: PermisosService,
+    private localStorageService: LocalStorageService
+  ) { }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('PermisionarioId');
     if (idParam) {
       this.permisionarioId = +idParam;
     }
+
+    const user = this.localStorageService.getUser();
+    if (user) {
+      this.canExportPdf = user.canExportPdf;
+      this.canExportExcel = user.canExportExcel;
+    }
+
     this.initializeData();
   }
 
@@ -47,22 +59,18 @@ export class PermisosDetailComponent implements OnInit {
         this.datos = response.permisos.map((permiso: Permisos) => ({
           ...permiso,
           expanded: false,
-
         }));
         this.permisionario = response.permisos[0].Permisionario;
-
-        console.log(response.permisos)
       }
 
-      if(response && response.permisionario){
-        this.curp = response.permisionario.CURP || "No definida"
-        this.colonia = response.permisionario.Colonia || "No definida"
-        this.Cp = response.permisionario.CodigoPostal || "No definida"
-        this.direccion =  response.permisionario.Direccion || "No definida"
-        this.rfc = response.permisionario.RFC || "No definida"
-        this.telefono = response.permisionario.Telefono1 || "No definida"
-        this.tipoPermisionario = response.permisionario.TipoPermisionario || "No definida"
-
+      if (response && response.permisionario) {
+        this.curp = response.permisionario.CURP || "No definida";
+        this.colonia = response.permisionario.Colonia || "No definida";
+        this.Cp = response.permisionario.CodigoPostal || "No definida";
+        this.direccion = response.permisionario.Direccion || "No definida";
+        this.rfc = response.permisionario.RFC || "No definida";
+        this.telefono = response.permisionario.Telefono1 || "No definida";
+        this.tipoPermisionario = response.permisionario.TipoPermisionario || "No definida";
       }
     } catch (error) {
       console.error("Error al obtener el permisionario:", error);
@@ -76,38 +84,35 @@ export class PermisosDetailComponent implements OnInit {
   }
 
   async pdfGlobal() {
-    this.isLoading = true; 
+    this.isLoading = true;
     try {
       await this.permisosService.downloadReports(this.permisionarioId);
-      this.isLoading = false;
     } catch (error) {
       console.error("Error al descargar el reporte:", error);
     } finally {
-      this.isLoading = false; 
+      this.isLoading = false;
     }
   }
 
-  async excelGlobal(){
+  async excelGlobal() {
     this.isLoading = true;
-
     try {
       await this.permisosService.downloadPermisionarioExcel(this.permisionarioId);
-      this.isLoading = false;
     } catch (error) {
       console.error('Error al descargar el Excel', error);
+    } finally {
       this.isLoading = false;
     }
   }
 
-  async pdfIndividual(permiso: number) {
-    this.isLoading = true; 
+  async pdfIndividual(permisoId: number) {
+    this.isLoading = true;
     try {
-      await this.permisosService.downloadIndividualReport(permiso);
-      this.isLoading = false;
+      await this.permisosService.downloadIndividualReport(permisoId);
     } catch (error) {
       console.error("Error al descargar el reporte:", error);
     } finally {
-      this.isLoading = false; 
+      this.isLoading = false;
     }
   }
 
