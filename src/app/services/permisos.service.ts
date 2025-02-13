@@ -18,28 +18,43 @@ export class PermisosService {
     fechaInicio?: string, 
     fechaTermino?: string
   ): Promise<any> {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        pageSize: pageSize.toString(),
-      });
+    const token = localStorage.getItem('token'); 
   
-      if (search) {
-        params.append("search", search);
-      }
-      if (fechaInicio) {
-        params.append("fechaInicio", fechaInicio);
-      }
-      if (fechaTermino) {
-        params.append("fechaTermino", fechaTermino);
-      }
+    const params = new URLSearchParams({
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    });
   
-      return this.apiclientService.get<any>(`/permisos?${params.toString()}`);
+    if (search) {
+      params.append("search", search);
+    }
+    if (fechaInicio) {
+      params.append("fechaInicio", fechaInicio);
+    }
+    if (fechaTermino) {
+      params.append("fechaTermino", fechaTermino);
+    }
+  
+    const headers = {
+      headers: { 'Authorization': `Bearer ${token}` }
+    };
+  
+    return this.apiclientService.get<any>(`/permisos?${params.toString()}`, headers);
   }
-
-  public async getPermisionario(permisionarioId:number): Promise <PermisionarioData>{
-    const response = this.apiclientService.get<PermisionarioData>(`permisos/permisionario?permisionarioId=${permisionarioId}`);
-    return response;
+  
+  public async getPermisionario(permisionarioId: number): Promise<PermisionarioData> {
+    const token = localStorage.getItem('token'); 
+  
+    const headers = {
+      headers: { 'Authorization': `Bearer ${token}` }
+    };
+  
+    return this.apiclientService.get<PermisionarioData>(
+      `permisos/permisionario?permisionarioId=${permisionarioId}`, 
+      headers
+    );
   }
+  
   
   public async downloadReports(permisionarioId: number): Promise<void> {
     try {

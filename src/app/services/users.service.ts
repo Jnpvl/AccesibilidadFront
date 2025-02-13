@@ -31,17 +31,25 @@ export class UsersService {
   public async getUsers(
     page: number,
     pageSize: number,
-    search?: string,): Promise<UsuariosData> {
-
+    search?: string
+  ): Promise<UsuariosData> {
+    const token = localStorage.getItem('token'); 
+  
     const params = new URLSearchParams({
       page: page.toString(),
       pageSize: pageSize.toString(),
     });
-
+  
     if (search) {
       params.append("search", search);
     }
-    return await this.apiClient.get<UsuariosData>(`users/obtener?${params.toString()}`);
+  
+    const headers = {
+      headers: { 'Authorization': `Bearer ${token}` }
+    };
+  
+    return await this.apiClient.get<UsuariosData>(`users/obtener?${params.toString()}`, headers);
   }
+  
 
 }
