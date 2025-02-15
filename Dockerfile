@@ -16,8 +16,12 @@ RUN npm run build -- --configuration production
 # Etapa 2: Servir la aplicación con Nginx
 FROM nginx:alpine
 
+
 # Copia los archivos compilados al directorio de Nginx
-COPY --from=build /app/dist/accdatabase /usr/share/nginx/html
+COPY --from=build /app/dist/accdatabase/browser /usr/share/nginx/html
+
+#Copiala configuracion personalizada de nginx
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Expone el puerto 80
 EXPOSE 80
