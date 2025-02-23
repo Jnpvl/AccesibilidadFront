@@ -19,8 +19,12 @@ export class ApiclientService  {
     return ApiclientService.instance;
   }
 
-  public async get<T>(path: string, options?: { headers?: HttpHeaders | { [key: string]: string } }): Promise<T> {
-    const url = `${environment.apiUrl}${path}`;
+  public async get<T>(
+    path: string,
+    baseUrl: string = environment.apiUrl,
+    options?: { headers?: HttpHeaders | { [key: string]: string } }
+  ): Promise<T> {
+    const url = `${baseUrl}${path}`;
     const response = await this.httpClient.get<T>(url, options).toPromise();
     if (response === undefined) {
       throw new Error('Response is undefined');
@@ -28,9 +32,13 @@ export class ApiclientService  {
     return response;
   }
   
-
-  public async post<T>(path: string, body: any, headers?: { [key: string]: string }): Promise<T> {
-    const url = `${environment.apiUrl}${path}`;
+  public async post<T>(
+    path: string,
+    body: any,
+    baseUrl: string = environment.apiUrl,
+    headers?: { [key: string]: string }
+  ): Promise<T> {
+    const url = `${baseUrl}${path}`;
     const options = headers ? { headers: new HttpHeaders(headers) } : {};
     const response = await this.httpClient.post<T>(url, body, options).toPromise();
     if (response === undefined) {
@@ -39,8 +47,13 @@ export class ApiclientService  {
     return response;
   }
 
-  public async put<T>(path: string, body: any, headers?: { [key: string]: string }): Promise<T> {
-    const url = `${environment.apiUrl}${path}`;
+  public async put<T>(
+    path: string,
+    body: any,
+    baseUrl: string = environment.apiUrl,
+    headers?: { [key: string]: string }
+  ): Promise<T> {
+    const url = `${baseUrl}${path}`;
     const options = headers ? { headers: new HttpHeaders(headers) } : {};
     const response = await this.httpClient.put<T>(url, body, options).toPromise();
     if (response === undefined) {

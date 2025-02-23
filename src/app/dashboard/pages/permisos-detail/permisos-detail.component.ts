@@ -45,8 +45,8 @@ export class PermisosDetailComponent implements OnInit {
 
     const user = this.localStorageService.getUser();
     if (user) {
-      this.canExportPdf = user.canExportPdf;
-      this.canExportExcel = user.canExportExcel;
+      this.canExportPdf = user.ADB_ExportPdf;
+      this.canExportExcel = user.ADB_ExportExcel;
     }
 
     this.initializeData();

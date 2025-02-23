@@ -23,34 +23,21 @@ export class LocalStorageService {
 
   public setUser(user: any): void {
     const {
-      ApellidoM,
-      ApellidoP,
-      Name,
-      canCreateUser,
-      canExportExcel,
-      canExportPdf,
+      RegistroCivilSystem,
       id,
-      role,
-      status,
-      username
+      ADB_ExportExcel,
+      ADB_ExportPdf
     } = user;
   
     const filteredUser = {
-      ApellidoM,
-      ApellidoP,
-      Name,
-      canCreateUser,
-      canExportExcel,
-      canExportPdf,
+      RegistroCivilSystem,
+      ADB_ExportExcel,
+      ADB_ExportPdf,
       id,
-      role,
-      status,
-      username
     };
 
     localStorage.setItem(this.USER_KEY, JSON.stringify(filteredUser));
   }
-
   public getUser(): any {
     const userData = localStorage.getItem(this.USER_KEY);
     return userData ? JSON.parse(userData) : null;

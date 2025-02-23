@@ -19,14 +19,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const token = this.localStorageService.getToken();
     if (token) {
-      const user = this.localStorageService.getUser();
-      if (user && user.status === 'Activo') {
-        this.router.navigate(['/dashboard/home']);
-      } else {
-        this.localStorageService.removeToken();
-        this.localStorageService.removeUser();
-        this.router.navigate(['/auth']);
-      }
+      this.router.navigate(['/dashboard/home']);
     } else {
       this.router.navigate(['/auth']);
     }

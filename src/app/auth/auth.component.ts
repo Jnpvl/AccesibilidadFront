@@ -22,21 +22,28 @@ export class AuthComponent {
     private router: Router
   ) {}
 
+ 
   async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
     this.error = "";
     try {
       const credentials = { username: this.usuario, password: this.password };
-      const response = await this.usersService.loginUser(credentials);      
+      const response = await this.usersService.loginUser(credentials);   
+      
+      console.log("resp",response)
       if (response && response.token) {
-        console.log("status",response.user.status)
-        if (response.user.status !== "Activo") {
+        if (!response.status) {
           this.error = "Usuario inactivo. Contacta al administrador.";
           return;
         }
+        if(!response.permissions.ADBSystem == true){
+          this.error = "No tiene acceso al sistema";
+          return;
+        }
         this.localStorageService.setToken(response.token);
-        this.localStorageService.setUser(response.user);
-        this.router.navigate(['/dashboard/home']);
+        this.localStorageService.setUser(response.permissions);
+  
+        this.router.navigate(['/dashboard/home'],{replaceUrl: true});
       } else {
         this.error = "Inicio de sesión fallido. Verifica tus credenciales.";
       }

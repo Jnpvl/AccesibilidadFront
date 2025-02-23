@@ -57,6 +57,7 @@ export class PermisosComponent implements OnInit {
 
   soloVigentes: boolean = false;
   globalSearch: string = '';
+  canExportExcel: boolean = false;
 
   filterOptions = [
     { id: 'tipoPermiso', key: 'TipoDePermiso', label: 'Tipo de Permiso' },
@@ -71,8 +72,7 @@ export class PermisosComponent implements OnInit {
     { id: 'tipoUnidad', key: 'TipoDeUnidad', label: 'Tipo de Unidad' },
   ];
 
-  // Propiedad para almacenar si el usuario tiene permiso para exportar Excel
-  canExportExcel: boolean = false;
+  
 
   constructor(
     private permisosService: PermisosService,
@@ -83,9 +83,8 @@ export class PermisosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Al iniciar, obtenemos el usuario y verificamos el permiso de exportación
     const user = this.localStorageService.getUser();
-    if (user && user.canExportExcel) {
+    if (user && user.ADB_ExportExcel) {
       this.canExportExcel = true;
     }
   }

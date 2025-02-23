@@ -16,11 +16,11 @@ export const routes: Routes = [
                 title: 'Inicio',
                 loadComponent: ( ) => import('./dashboard/pages/home/home.component').then(m => m.HomeComponent),
             },
-            {
-                path: 'example',
-                title: 'Ejemplo',
-                loadComponent: ( ) => import('./dashboard/pages/example/example.component').then(m => m.ExampleComponent),
-            },
+            // {
+            //     path: 'example',
+            //     title: 'Ejemplo',
+            //     loadComponent: ( ) => import('./dashboard/pages/example/example.component').then(m => m.ExampleComponent),
+            // },
             {
                 path: 'concesionario',
                 title: 'Concesionario',
@@ -35,12 +35,6 @@ export const routes: Routes = [
                 path: 'permisos-detail/:PermisionarioId',
                 title: 'Detalle del permisionario',
                 loadComponent: ( ) => import('./dashboard/pages/permisos-detail/permisos-detail.component').then(m => m.PermisosDetailComponent),
-              
-            },
-            {
-                path: 'usuarios',
-                title: 'Usuarios',
-                loadComponent: ( ) => import('./dashboard/pages/usuarios/usuarios.component').then(m => m.UsuariosComponent),
               
             },
 

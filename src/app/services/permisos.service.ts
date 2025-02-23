@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiclientService } from './apiclient.service';
 import { PermisionarioData } from '../interfaces/Permisos.interface';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,10 @@ export class PermisosService {
     fechaInicio?: string, 
     fechaTermino?: string
   ): Promise<any> {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
   
     const params = new URLSearchParams({
       page: page.toString(),
@@ -35,37 +39,47 @@ export class PermisosService {
       params.append("fechaTermino", fechaTermino);
     }
   
-    const headers = {
-      headers: { 'Authorization': `Bearer ${token}` }
-    };
+    const headers = { 'Authorization': `Bearer ${token}` };
   
-    return this.apiclientService.get<any>(`/permisos?${params.toString()}`, headers);
-  }
-  
-  public async getPermisionario(permisionarioId: number): Promise<PermisionarioData> {
-    const token = localStorage.getItem('token'); 
-  
-    const headers = {
-      headers: { 'Authorization': `Bearer ${token}` }
-    };
-  
-    return this.apiclientService.get<PermisionarioData>(
-      `permisos/permisionario?permisionarioId=${permisionarioId}`, 
-      headers
+    return this.apiclientService.get<any>(
+      `permisos?${params.toString()}`, 
+      environment.apiUrl, 
+      { headers }
     );
   }
   
+  public async getPermisionario(permisionarioId: number): Promise<PermisionarioData> {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found');
+    }
+  
+    const headers = { 'Authorization': `Bearer ${token}` };
+  
+    return this.apiclientService.get<PermisionarioData>(
+      `permisos/permisionario?permisionarioId=${permisionarioId}`,
+      environment.apiUrl, 
+      { headers }
+    );
+  }
   
   public async downloadReports(permisionarioId: number): Promise<void> {
     try {
       const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const headers = { 'Authorization': `Bearer ${token}` };
   
-      const blob: Blob = await this.apiclientService.get<Blob>('permisos/reports', {
-        params: { permisionarioId: permisionarioId },
-        responseType: 'blob',
-        headers
-      } as any);
+      const blob: Blob = await this.apiclientService.get<Blob>(
+        `permisos/reports`, 
+        environment.apiUrl,
+        {
+          params: { permisionarioId: permisionarioId },
+          responseType: 'blob',
+          headers
+        } as any
+      );
   
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -86,7 +100,10 @@ export class PermisosService {
   }): Promise<void> {
     try {
       const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const headers = { 'Authorization': `Bearer ${token}` };
   
       const params = new URLSearchParams();
       if (options.columns) {
@@ -98,10 +115,14 @@ export class PermisosService {
   
       const url = `permisos/excel?${params.toString()}`;
   
-      const blob: Blob = await this.apiclientService.get<Blob>(url, {
-        responseType: 'blob',
-        headers
-      } as any);
+      const blob: Blob = await this.apiclientService.get<Blob>(
+        url,
+        environment.apiUrl, 
+        {
+          responseType: 'blob',
+          headers
+        } as any
+      );
   
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -119,7 +140,10 @@ export class PermisosService {
   public async downloadPermisionarioExcel(permisionarioId: number): Promise<void> {
     try {
       const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const headers = { 'Authorization': `Bearer ${token}` };
   
       const filtersObj = {
         PermisionarioId: permisionarioId.toString()
@@ -127,7 +151,8 @@ export class PermisosService {
       const filtersString = JSON.stringify(filtersObj);
   
       const blob: Blob = await this.apiclientService.get<Blob>(
-        'permisos/permisionarioExcel',
+        `permisos/permisionarioExcel`,
+        environment.apiUrl,
         {
           params: { filters: filtersString },
           responseType: 'blob',
@@ -151,13 +176,20 @@ export class PermisosService {
   public async downloadIndividualReport(permisoId: number): Promise<void> {
     try {
       const token = localStorage.getItem('token');
-      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+      if (!token) {
+        throw new Error('No token found');
+      }
+      const headers = { 'Authorization': `Bearer ${token}` };
   
-      const blob: Blob = await this.apiclientService.get<Blob>('permisos/report', {
-        params: { permisoId: permisoId },
-        responseType: 'blob',
-        headers
-      } as any);
+      const blob: Blob = await this.apiclientService.get<Blob>(
+        `permisos/report`,
+        environment.apiUrl,
+        {
+          params: { permisoId: permisoId },
+          responseType: 'blob',
+          headers
+        } as any
+      );
   
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
